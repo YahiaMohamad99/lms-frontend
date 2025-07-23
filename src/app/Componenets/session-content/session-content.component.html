@@ -1,0 +1,31 @@
+<div *ngIf="loading">⏳ جاري التحميل...</div>
+
+<div *ngIf="!loading && contents.length > 0">
+  <h4>🎥 Videos</h4>
+  <ul>
+    <li *ngFor="let content of getContentsByType('Video')">
+      {{ content.resourceUrl }}
+      <button (click)="deleteContent(content.sessionContentId)">🗑️ حذف</button>
+    </li>
+  </ul>
+
+  <h4>📄 Documents</h4>
+  <ul>
+    <li *ngFor="let content of getContentsByType('Document')">
+      {{ content.resourceUrl }}
+      <button (click)="deleteContent(content.sessionContentId)">🗑️ حذف</button>
+    </li>
+  </ul>
+
+  <h4>💻 Code Files</h4>
+  <ul>
+    <li *ngFor="let content of getContentsByType('Code')">
+      {{ content.resourceUrl }}
+      <button (click)="deleteContent(content.sessionContentId)">🗑️ حذف</button>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="!loading && contents.length === 0">
+  <p>⚠️ لا توجد ملفات في هذه الجلسة حالياً.</p>
+</div>

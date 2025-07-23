@@ -1,0 +1,44 @@
+<h2>📘 كل الكورسات</h2>
+
+<!-- فورم تعديل الكورس -->
+<form [formGroup]="courseForm" (ngSubmit)="submitEdit()" *ngIf="editMode" class="edit-form">
+  <mat-form-field appearance="fill">
+    <mat-label>عنوان الكورس</mat-label>
+    <input matInput formControlName="title" placeholder="..."/>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">💾 حفظ التعديل</button>
+  <button mat-button type="button" (click)="editMode = false">❌ إلغاء</button>
+</form>
+
+<!-- عرض الكورسات -->
+<div *ngFor="let course of courses" class="course-card mat-elevation-z2">
+  <h3>{{ course.title }}</h3>
+
+<button mat-button color="warn" (click)="confirmAndDelete(course.courseId)">🗑️ حذف</button>
+
+  <button mat-button color="accent" (click)="editCourse(course)">✏️ تعديل</button>
+  <button (click)="goToCourseDetails(course.courseId)">👁️ عرض الجلسات</button>
+
+  <!-- Dropdown السيشنات -->
+  <div *ngIf="expandedCourseId === course.courseId" class="sessions-dropdown">
+    <h4>📅 السيشنات:</h4>
+    <ul *ngIf="course.sessions?.length; else noSessions">
+      <li *ngFor="let session of course.sessions">
+        {{ session.topic }} - {{ session.date | date:'mediumDate' }}
+      </li>
+    </ul>
+
+    <ng-template #noSessions>
+      <p>لا توجد سيشنات لهذا الكورس حتى الآن.</p>
+    </ng-template>
+  </div>
+</div>
+<form [formGroup]="courseForm" (ngSubmit)="onSubmit()" *ngIf="!editMode" class="add-form">
+  <mat-form-field appearance="fill">
+    <mat-label>عنوان الكورس</mat-label>
+    <input matInput formControlName="title" placeholder="..."/>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">➕ إضافة كورس</button>
+</form>

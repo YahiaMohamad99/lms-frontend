@@ -1,0 +1,22 @@
+<p>course-details works!</p>
+<h2>📚 الجلسات الخاصة بالكورس</h2>
+
+<ul>
+  <li *ngFor="let session of sessions">
+    {{ session.title }}
+    <button (click)="goToSession(session.sessionId)">👁️ فتح</button>
+    <button (click)="deleteSession(session.sessionId)">🗑️ حذف</button>
+  </li>
+</ul>
+
+
+<h3>➕ إضافة جلسة جديدة</h3>
+
+<form [formGroup]="sessionForm" (ngSubmit)="addSession()">
+  <input formControlName="title" placeholder="عنوان الجلسة" />
+  
+
+
+  <button type="submit" [disabled]="sessionForm.invalid">💾 حفظ الجلسة</button>
+</form>
+

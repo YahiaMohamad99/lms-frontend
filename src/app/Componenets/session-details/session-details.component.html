@@ -1,0 +1,34 @@
+<h2>📁 محتوى الجلسة</h2>
+
+<!-- Videos -->
+<h3>🎥 فيديوهات</h3>
+<ul>
+  <li *ngFor="let v of getContentsByType('Video')">
+    {{ v.originalName }}
+    <a [href]="v.resourceUrl" target="_blank">📥</a>
+    <button (click)="deleteContent(v.sessionContentId)">🗑️</button>
+  </li>
+</ul>
+<input type="file" (change)="onFileSelect($event, 'Video')" placeholder="..." />
+
+<!-- Documents -->
+<h3>📄 مستندات</h3>
+<ul>
+  <li *ngFor="let d of getContentsByType('Document')">
+    {{ d.originalName }}
+    <a [href]="d.resourceUrl" target="_blank">📥</a>
+    <button (click)="deleteContent(d.sessionContentId)">🗑️</button>
+  </li>
+</ul>
+<input type="file" (change)="onFileSelect($event, 'Document')" placeholder="..." />
+
+<!-- Code Files -->
+<h3>💻 ملفات كود</h3>
+<ul>
+  <li *ngFor="let c of getContentsByType('Code')">
+    {{ c.originalName }}
+    <a [href]="c.resourceUrl" target="_blank">📥</a>
+    <button (click)="deleteContent(c.sessionContentId)">🗑️</button>
+  </li>
+</ul>
+<input type="file" (change)="onFileSelect($event, 'Code')" placeholder="..." />

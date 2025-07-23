@@ -1,0 +1,116 @@
+<mat-card class="students-card">
+  <mat-card-title >👥 Manage Students</mat-card-title>
+
+  <mat-card-content>
+    <!-- 📋 جدول عرض الطلبة -->
+    <div class="students-table">
+      <table
+        mat-table
+        [dataSource]="students"
+        class="mat-elevation-z8"
+        *ngIf="students.length"
+      >
+        <!-- اسم الطالب -->
+        <ng-container matColumnDef="fullName">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let student">{{ student.fullName }}</td>
+        </ng-container>
+
+        <!-- الرقم القومي -->
+        <ng-container matColumnDef="nationalID">
+          <th mat-header-cell *matHeaderCellDef>National ID</th>
+          <td mat-cell *matCellDef="let student">{{ student.nationalID }}</td>
+        </ng-container>
+
+        <!-- رقم واتساب -->
+        <ng-container matColumnDef="whatsAppNumber">
+          <th mat-header-cell *matHeaderCellDef>WhatsApp</th>
+          <td mat-cell *matCellDef="let student">
+            {{ student.whatsAppNumber }}
+          </td>
+        </ng-container>
+
+        <!-- الإيميل -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let student">{{ student.email }}</td>
+        </ng-container>
+
+        <!-- الأكشنز -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let student">
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="editStudent(student)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            
+
+      <button mat-icon-button color="warn" (click)="deleteStudent(student.studentId)">
+  <mat-icon>delete</mat-icon>
+</button>
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <!-- 🧾 نموذج إضافة أو تعديل طالب -->
+    <form
+      [formGroup]="studentForm"
+      (ngSubmit)="onSubmit()"
+      class="student-form"
+    >
+      <mat-form-field appearance="outline" class="form-field">
+        <input matInput placeholder="Full Name" formControlName="fullName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <input
+          matInput
+          placeholder="National ID"
+          formControlName="nationalID"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <input
+          matInput
+          placeholder="WhatsApp Number"
+          formControlName="whatsAppNumber"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <input matInput placeholder="Email" formControlName="email" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <input
+          matInput
+          placeholder="Profile Picture URL"
+          formControlName="profilePicture"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <input
+          matInput
+          placeholder="Password"
+          formControlName="password"
+          type="password"
+        />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit">
+        {{ isEditMode ? "Update Student" : "Add Student" }}
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>
