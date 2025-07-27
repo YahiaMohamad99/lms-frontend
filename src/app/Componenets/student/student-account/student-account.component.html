@@ -1,1 +1,39 @@
-<p>student-account works!</p>
+<mat-card class="account-card">
+  <mat-card-title>👤 Student Account</mat-card-title>
+
+  <mat-card-content *ngIf="student">
+    <div class="account-details">
+      <div class="student-image">
+        <img
+        
+    [src]="imageBaseUrl+student.profilePicture"
+    alt="Student Image"
+    class="student-img"
+  />
+      </div>
+      
+
+
+      <div class="info">
+        <p><strong>Name:</strong> {{ student.fullName }}</p>
+        <p><strong>Email:</strong> {{ student.email }}</p>
+        <p><strong>WhatsApp:</strong> {{ student.whatsAppNumber}}</p>
+        <p><strong>National ID:</strong> {{ student.nationalID }}</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button mat-raised-button color="accent" (click)="navigateToAttendance()">
+        👁️ View Attendance
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="navigateToSubmissions()"
+      >
+        📦 View Submitted Tasks
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

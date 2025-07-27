@@ -9,3 +9,6 @@ width: 90%;
 .students-table{
     margin: 50px 0  ;
 }
+td{
+    cursor: pointer;
+}

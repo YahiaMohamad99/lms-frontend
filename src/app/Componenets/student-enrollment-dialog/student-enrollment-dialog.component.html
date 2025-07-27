@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>تسجيل الطلاب في كورس: {{ courseTitle }}</h2>
+
+<mat-dialog-content>
+  <mat-selection-list [(ngModel)]="selectedStudents">
+    <mat-list-option *ngFor="let student of students" [value]="student.studentId">
+      {{ student.fullName }}
+    </mat-list-option>
+  </mat-selection-list>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="selectAllStudents()">تحديد الكل</button>
+  <button mat-button color="warn" (click)="clearSelections()">مسح التحديد</button>
+  <button mat-flat-button color="primary" (click)="registerSelectedStudents()">تسجيل الطلبة</button>
+</mat-dialog-actions>

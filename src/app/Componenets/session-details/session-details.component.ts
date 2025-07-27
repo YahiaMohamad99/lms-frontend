@@ -17,27 +17,49 @@ export class SessionDetailsComponent implements OnInit {
     this.loadContents();
   }
 
-  loadContents(): void {
-    this.contentService.getBySession(this.sessionId).subscribe({
-      next: res => this.contents = res
-    });
-  }
+loadContents(): void {
+  this.contentService.getBySession(this.sessionId).subscribe({
+    next: (res) => {
+      this.contents = Array.isArray(res) ? res : [];
+    },
+    error: (err) => {
+      console.error('❌ فشل تحميل المحتوى:', err);
+      this.contents = [];
+    }
+  });
+}
+
+
 
   deleteContent(id: number): void {
     this.contentService.deleteContent(id).subscribe({
-      next: () => this.loadContents()
+      next: () => this.loadContents(),
+      error: (err) => console.error('❌ فشل حذف المحتوى:', err)
     });
   }
 
   getContentsByType(type: string): SessionContent[] {
-    return this.contents.filter(c => c.type.toLowerCase() === type.toLowerCase());
+    if (!Array.isArray(this.contents)) return [];
+
+    return this.contents.filter(c => c.type?.toLowerCase() === type.toLowerCase());
   }
 
   onFileSelect(event: any, type: string): void {
     const file: File = event.target.files[0];
+    console.log('📁 ملف مختار:', file?.name, '🧮 الحجم:', file?.size);
+
     if (file) {
       this.contentService.uploadContent(this.sessionId, type, file).subscribe({
-        next: () => this.loadContents()
+        next: () => {
+          console.log('✅ تم الرفع بنجاح');
+          this.loadContents();
+        },
+        error: (err) => {
+          console.warn('📛 الرسالة العامة:', err.error?.title || err.message);
+          console.warn('🆔 الجلسة:', err.error?.errors?.SessionId);
+          console.warn('📦 النوع:', err.error?.errors?.Type);
+          console.warn('📁 الملف:', err.error?.errors?.File);
+        }
       });
     }
   }

@@ -20,9 +20,12 @@ export class SessionContentService {
   constructor(private http: HttpClient) {}
 
   // 📥 جلب كل الملفات المرتبطة بجلسة معينة
-  getBySession(sessionId: number): Observable<SessionContent[]> {
-    return this.http.get<SessionContent[]>(`${this.apiUrl}/session/${sessionId}`);
-  }
+getBySession(sessionId: number): Observable<{ message: string; data: SessionContent[] }> {
+  return this.http.get<{ message: string; data: SessionContent[] }>(
+    `${this.apiUrl}/session/${sessionId}`
+  );
+}
+
 
   // ➕ إضافة محتوى جديد
   addContent(content: Partial<SessionContent>): Observable<SessionContent> {
@@ -43,7 +46,7 @@ export class SessionContentService {
   formData.append('sessionId', sessionId.toString());
   formData.append('type', type);
   formData.append('file', file);
-
+    
   return this.http.post<SessionContent>(`${this.apiUrl}/upload`, formData);
 }
 

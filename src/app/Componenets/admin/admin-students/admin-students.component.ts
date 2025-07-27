@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { StudentService, Student } from 'src/app/core/services/student/student.service';
+import { Router } from '@angular/router';
+import {
+  Student,
+  StudentService,
+} from 'src/app/core/services/student/student.service';
 
 @Component({
   selector: 'app-admin-students',
   templateUrl: './admin-students.component.html',
-  styleUrls: ['./admin-students.component.css']
+  styleUrls: ['./admin-students.component.css'],
 })
 export class AdminStudentsComponent implements OnInit {
   studentForm!: FormGroup;
@@ -13,9 +17,11 @@ export class AdminStudentsComponent implements OnInit {
   isEditMode = false;
   selectedStudentId: number | null = null;
   isLoading = false;
-  displayedColumns = ['fullName', 'nationalID', 'whatsAppNumber', 'email', 'actions'];
+  selectedFile: File | null = null;
 
-  constructor(private studentService: StudentService) {}
+  displayedColumns = ['fullName', 'whatsAppNumber', 'email', 'actions'];
+
+  constructor(private studentService: StudentService, private router: Router) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -25,98 +31,94 @@ export class AdminStudentsComponent implements OnInit {
   initializeForm(): void {
     this.studentForm = new FormGroup({
       fullName: new FormControl('', Validators.required),
-      nationalID: new FormControl('', [Validators.required, Validators.minLength(14)]),
+      nationalID: new FormControl('', [
+        Validators.required,
+        Validators.minLength(14),
+      ]),
       whatsAppNumber: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
       profilePicture: new FormControl(''),
-      password: new FormControl('', Validators.required)
+      password: new FormControl('', Validators.required),
     });
   }
 
   loadStudents(): void {
     this.isLoading = true;
     this.studentService.getAllStudents().subscribe({
-      next: (res) => {
+      next: (res: Student[]) => {
         this.students = res;
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('❌ Failed to load students:', err);
         this.isLoading = false;
-      }
+      },
     });
   }
 
   onSubmit(): void {
+    if (this.studentForm.invalid || !this.selectedFile) return;
 
-    if (this.studentForm.invalid) return;
+    const formData = new FormData();
+    formData.append('fullName', this.studentForm.value.fullName);
+    formData.append('nationalID', this.studentForm.value.nationalID);
+    formData.append('whatsAppNumber', this.studentForm.value.whatsAppNumber);
+    formData.append('email', this.studentForm.value.email);
+    formData.append('password', this.studentForm.value.password);
+    formData.append('profilePicture', this.selectedFile); // لازم تكون موجودة فعلاً
 
-    const studentData = this.studentForm.value;
-    console.log('🧾 Student data before sending:', studentData);
 
-    const request$ = this.isEditMode && this.selectedStudentId !== null
-      ? this.studentService.updateStudent(this.selectedStudentId, studentData)
-      : this.studentService.createStudent(studentData);
+    this.studentService.createStudent(formData).subscribe({
+      next: (res) => {
+        this.loadStudents();
+        this.resetForm();
+        console.log('Selected file:', this.selectedFile);
+        console.log('Student register response:', res);
 
-    request$.subscribe({
+      },
+      error: (err) => console.error('❌ Operation failed:', err),
+    });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.selectedFile = input.files?.[0] || null;
+  }
+  editStudent(student: Student): void {
+    this.studentForm.patchValue({
+      fullName: student.fullName,
+      nationalID: student.nationalID,
+      whatsAppNumber: student.whatsAppNumber,
+      email: student.email,
+      profilePicture: student.profilePicture,
+      password: '',
+    });
+
+    this.isEditMode = true;
+    this.selectedStudentId = student.studentId ?? null;
+  }
+
+  deleteStudent(id: number | undefined): void {
+    if (!id) return;
+
+    this.studentService.deleteStudent(id).subscribe({
       next: () => {
         this.loadStudents();
         this.resetForm();
       },
-      error: (err) => {
-        console.error('❌ Operation failed:', err);
-      }
+      error: (err: any) => {
+        console.error('❌ Failed to delete student:', err);
+      },
     });
-
   }
 
-editStudent(student: Student): void {
-  console.log('✏️ Preparing to edit student:', student);
-
-  this.studentForm.patchValue({
-    fullName: student.fullName,
-    nationalID: student.nationalID,
-    whatsAppNumber: student.whatsAppNumber,
-    email: student.email,
-    profilePicture: student.profilePicture,
-    password: '' // تقدر تخليه مطلوب إعادة إدخال
-  });
-
-  this.isEditMode = true;
-  this.selectedStudentId = student.studentId ?? null;
-
-  console.log('📌 Selected student ID:', this.selectedStudentId);
-}
-
-
-deleteStudent(id: number | undefined): void {
-  if (!id) {
-    console.warn('❌ لا يوجد ID للحذف');
-    return;
+  openStudentProfile(id: number): void {
+    this.router.navigate(['/student-account', id]);
   }
-
-  console.log('🗑️ ID to delete:', id); // ✅ تحقق من وجود ID
-
-  this.studentService.deleteStudent(id).subscribe({
-    next: () => {
-      console.log('✅ تم حذف الطالب');
-      this.loadStudents();
-      this.resetForm();
-    },
-    error: (err) => {
-      console.error('❌ خطأ في الحذف:', err);
-    }
-  });
-}
-
 
   resetForm(): void {
     this.studentForm.reset();
     this.isEditMode = false;
     this.selectedStudentId = null;
   }
-  logStudent(student: Student): void {
-  console.log('📦 Student object:', student);
-}
-
 }

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SessionService } from 'src/app/core/services/session/session.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogConfirmComponent } from 'src/app/shared/dialog-confirm/dialog-confirm.component';
 
 @Component({
   selector: 'app-course-details',
@@ -16,7 +18,8 @@ export class CourseDetailsComponent implements OnInit {
     private fb: FormBuilder,
     private sessionService: SessionService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -71,12 +74,25 @@ export class CourseDetailsComponent implements OnInit {
     });
   }
 
-  deleteSession(sessionId: number): void {
-    this.sessionService.deleteSession(sessionId).subscribe({
-      next: () => this.loadSessions(),
-      error: err => console.error('❌ فشل حذف الجلسة:', err)
-    });
-  }
+deleteSession(sessionId: number): void {
+  const dialogRef = this.dialog.open(DialogConfirmComponent, {
+    width: '350px'
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === true) {
+      this.sessionService.deleteSession(sessionId).subscribe({
+        next: () => {
+          this.loadSessions(); // 🌀 تحديث قائمة الجلسات بعد الحذف
+        },
+        error: err => {
+          console.error('❌ فشل حذف الجلسة:', err);
+        }
+      });
+    }
+  });
+}
+
 
   goToSession(sessionId: number): void {
     this.router.navigate(['/session', sessionId]);

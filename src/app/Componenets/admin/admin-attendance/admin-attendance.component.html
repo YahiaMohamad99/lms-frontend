@@ -1,1 +1,25 @@
-<p>admin-attendance works!</p>
+<!-- admin-attendance.component.html -->
+<div>
+  <h2>QR Code for Session</h2>
+  <qrcode [qrdata]="qrData" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+</div>
+    
+
+<table border="1" cellspacing="0" cellpadding="5">
+  <thead>
+    <tr>
+      <th>Student Name</th>
+      <th *ngFor="let session of sessions">{{ session.sessionTitle }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let student of attendanceData">
+      <td>{{ student.studentName }}</td>
+      <td *ngFor="let att of student.attendance" (click)="onCellClick(student, att)" style="cursor:pointer; user-select:none;">
+        <span [style.color]="att.isPresent ? 'green' : 'red'">
+          {{ att.isPresent ? '✔' : '✘' }}
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>

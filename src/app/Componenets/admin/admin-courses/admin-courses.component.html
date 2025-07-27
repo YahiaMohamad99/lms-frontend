@@ -20,6 +20,10 @@
   <button mat-button color="accent" (click)="editCourse(course)">✏️ تعديل</button>
   <button (click)="goToCourseDetails(course.courseId)">👁️ عرض الجلسات</button>
 
+<button mat-button color="primary" (click)="openEnrollDialog(course)">
+  إدارة تسجيل الطلاب
+</button>
+
   <!-- Dropdown السيشنات -->
   <div *ngIf="expandedCourseId === course.courseId" class="sessions-dropdown">
     <h4>📅 السيشنات:</h4>
@@ -39,6 +43,7 @@
     <mat-label>عنوان الكورس</mat-label>
     <input matInput formControlName="title" placeholder="..."/>
   </mat-form-field>
+
 
   <button mat-raised-button color="primary" type="submit">➕ إضافة كورس</button>
 </form>

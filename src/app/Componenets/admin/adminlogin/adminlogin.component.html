@@ -1,23 +1,54 @@
-<div class="login-container">
-  <h1> Admin Login</h1>
-
-  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-  <!-- <form > -->
-    <div class="form-field">
-      <label for="email">Enter Your Email</label>
-      <input id="email" type="email" formControlName="email" required />
+<div class="login-page-container">
+  <div class="login-card">
+    <div class="card-header">
+      <h1 class="card-title">Admin Login</h1>
+      <p class="card-subtitle">Access your dashboard</p>
     </div>
 
-    <div class="form-field">
-      <label for="password">Password</label>
-      <input id="password" type="password" formControlName="password" required />
-    </div>
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-input"
+          placeholder="Enter your email"
+          required
+        />
+        <div
+          *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+          class="validation-error"
+        >
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">Enter a valid email.</span>
+        </div>
+      </div>
 
-    <button type="submit">Login</button>
-  </form>
+      <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          class="form-input"
+          placeholder="Enter your password"
+          required
+        />
+        <div
+          *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          class="validation-error"
+        >
+          <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</span>
+        </div>
+      </div>
 
-  <p class="error-message">
-  <!-- <p *ngIf="loginForm.invalid && loginForm.touched" class="error-message"> -->
-All Feilds Are requiredddddd
-</p>
+      <button type="submit" class="submit-button" [disabled]="loginForm.invalid">Login</button>
+    </form>
+
+    <p *ngIf="errorMessage" class="general-error-message login-failed-message">
+      {{ errorMessage }}
+    </p>
+
+  </div>
 </div>

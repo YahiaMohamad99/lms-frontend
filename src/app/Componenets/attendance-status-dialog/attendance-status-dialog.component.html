@@ -1,0 +1,8 @@
+<h2>تعديل حالة الحضور</h2>
+<p>هل تريد تغيير حالة الحضور للطالب <strong>{{data.studentName}}</strong> في الجلسة <strong>{{data.sessionTitle}}</strong>؟</p>
+
+<p>الحالة الحالية: <strong>{{data.currentStatus ? 'حاضر' : 'غايب'}}</strong></p>
+
+<button (click)="onChangeStatus(true)">حاضر</button>
+<button (click)="onChangeStatus(false)">غايب</button>
+<button (click)="onCancel()">إلغاء</button>

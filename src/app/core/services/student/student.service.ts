@@ -24,14 +24,14 @@ export class StudentService {
   constructor(private http: HttpClient) {}
 
   // ✅ إنشاء حساب طالب جديد
-  createStudent(student: Student): Observable<Student> {
-    return this.http.post<Student>(this.registerUrl, student);
-  }
+createStudent(studentData: FormData): Observable<any> {
+  return this.http.post(this.registerUrl, studentData);
+}
 
-  // ✅ تعديل بيانات طالب موجود
-  updateStudent(id: number, student: Student): Observable<Student> {
-    return this.http.put<Student>(`${this.studentUrl}/${id}`, student);
-  }
+updateStudent(studentId: number, studentData: FormData): Observable<any> {
+  return this.http.put(`/api/students/${studentId}`, studentData);
+}
+
 
   // ✅ حذف طالب
   deleteStudent(id: number): Observable<void> {
@@ -47,4 +47,8 @@ export class StudentService {
   getAllStudents(): Observable<Student[]> {
     return this.http.get<Student[]>(this.studentUrl);
   }
+
+
+  
+
 }
